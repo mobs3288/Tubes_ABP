@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
  
 use Illuminate\Http\Request;
+use App\Models\Account;
  
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -17,6 +18,13 @@ class PHPMailerController extends Controller {
  
     // ========== [ Compose Email ] ================
     public function composeEmail(Request $request) {
+        $request->validate(['Password' => 'required|confirmed|min:6']);
+        $account = new Account;
+        $account->Email = $request->Email;
+        $account->Number = $request->Number;
+        $account->Password = sha1($request->Password);
+        $account->Photo = "";
+
         require base_path("vendor/autoload.php");
         $PASS = $_ENV['PASS'];
         $MAIL = $_ENV['EMAIL'];
@@ -53,7 +61,7 @@ class PHPMailerController extends Controller {
             //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     
         }
-        return redirect('/inputotp');
+        return redirect('/inputotp')->with('otp', $pesan)->with('data', $account);
     } 
     
 }

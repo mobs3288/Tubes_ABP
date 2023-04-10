@@ -8,6 +8,9 @@ use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Http\Request;
 use App\Models\Account;
+ 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class UserDo extends BaseController
 {
@@ -26,6 +29,43 @@ class UserDo extends BaseController
         $account->Password = sha1($req->Password);
         $account->Photo = "";
         $account->save();
+
+        require base_path("vendor/autoload.php");
+        $PASS = $_ENV['PASS'];
+        $MAIL = $_ENV['EMAIL'];
+        $judul = "Your OTP Code is Here!";
+        $pesan = rand(100000, 999999);
+        $email = $req->Email;
+        $mail = new PHPMailer(true);     // Passing `true` enables exceptions
+ 
+        try {
+ 
+            $mail->SMTPDebug = 0;                      //Enable verbose debug output
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mail->Username   = $MAIL;                     //SMTP username
+            $mail->Password   = $PASS;                               //SMTP password
+            $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
+            $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    
+            //pengirim
+            $mail->setFrom('email@gmail.com', 'Your OTP Code is Here!');
+            $mail->addAddress($email);     //Add a recipient
+        
+            //Content
+            $mail->isHTML(true);                                  //Set email format to HTML
+            $mail->Subject = $judul;
+            $mail->Body    = $pesan;
+            $mail->AltBody = '';
+            //$mail->AddEmbeddedImage('gambar/logo.png', 'logo'); //abaikan jika tidak ada logo
+            //$mail->addAttachment(''); 
+    
+            $mail->send();
+        } catch (Exception $e) {
+            //echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    
+        }
 
         return redirect('/login');
     }
