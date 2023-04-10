@@ -100,7 +100,7 @@
               </div>
             </div>
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-              <form action="/regist" method="POST">
+              <form action="{{route('send-email')}}" method="POST">
                 @csrf 
                 <!-- Email input -->
                 <div class="form-outline mb-4">

@@ -24,6 +24,7 @@ class UserDo extends BaseController
         $account->Email = $req->Email;
         $account->Number = $req->Number;
         $account->Password = sha1($req->Password);
+        $account->Photo = "";
         $account->save();
 
         return redirect('/login');
@@ -63,4 +64,5 @@ class UserDo extends BaseController
         session(['account'=>null]);
         return redirect('/');
     }
+
 }

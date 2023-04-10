@@ -28,4 +28,8 @@ class HomeDo extends BaseController
     public function availgarage() {
         return view("availgarage");
     }
+
+    public function inputotp(){
+        return view("inputotp");
+    }
 }
